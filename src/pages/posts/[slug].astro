@@ -120,79 +120,96 @@ const { Content } = await post.render();
           });
         }
 
-        // Force apply margin-bottom to headings using JavaScript - spacing reduced by 50%
+        // Apply heading spacing using CSS variables - elegant implementation
         const applyHeadingSpacing = () => {
           const postContent = document.querySelector(".post-content");
           if (!postContent) return;
 
-          const h2s = postContent.querySelectorAll("h2");
-          h2s.forEach((h2) => {
-            if (h2 instanceof HTMLElement) {
-              // Skip first h2 (no margin-top needed)
-              if (h2.previousElementSibling === null) {
-                h2.style.marginTop = "0";
+          const rootStyles = getComputedStyle(document.documentElement);
+          const getCSSVar = (name: string, fallback: string) =>
+            rootStyles.getPropertyValue(name).trim() || fallback;
+
+          // Heading configuration - centralized and maintainable
+          const headingConfig = [
+            {
+              selector: "h2",
+              marginTopVar: "--post-h2-margin-top",
+              marginBottomVar: "--post-h2-margin-bottom",
+              contentMarginTopVar: "--post-h2-content-margin-top",
+              defaults: {
+                marginTop: "3rem",
+                marginBottom: "1.17rem",
+                contentMarginTop: "1.17rem",
+              },
+              skipFirstMarginTop: true,
+            },
+            {
+              selector: "h3",
+              marginTopVar: "--post-h3-margin-top",
+              marginBottomVar: "--post-h3-margin-bottom",
+              contentMarginTopVar: "--post-h3-content-margin-top",
+              defaults: {
+                marginTop: "2.5rem",
+                marginBottom: "1rem",
+                contentMarginTop: "1rem",
+              },
+              skipFirstMarginTop: false,
+            },
+            {
+              selector: "h4",
+              marginTopVar: "--post-h4-margin-top",
+              marginBottomVar: "--post-h4-margin-bottom",
+              contentMarginTopVar: "--post-h4-content-margin-top",
+              defaults: {
+                marginTop: "2rem",
+                marginBottom: "0.83rem",
+                contentMarginTop: "0.83rem",
+              },
+              skipFirstMarginTop: false,
+            },
+          ];
+
+          const contentTags = ["P", "UL", "OL", "PRE"];
+
+          // Process each heading type using configuration
+          headingConfig.forEach((config) => {
+            const headings = postContent.querySelectorAll(config.selector);
+            const marginTop = getCSSVar(
+              config.marginTopVar,
+              config.defaults.marginTop
+            );
+            const marginBottom = getCSSVar(
+              config.marginBottomVar,
+              config.defaults.marginBottom
+            );
+            const contentMarginTop = getCSSVar(
+              config.contentMarginTopVar,
+              config.defaults.contentMarginTop
+            );
+
+            headings.forEach((heading) => {
+              if (!(heading instanceof HTMLElement)) return;
+
+              // Apply heading margins
+              if (
+                config.skipFirstMarginTop &&
+                heading.previousElementSibling === null
+              ) {
+                heading.style.marginTop = "0";
               } else {
-                h2.style.marginTop = "3rem";
+                heading.style.marginTop = marginTop;
               }
-              h2.style.marginBottom = "1.17rem"; // Reduced by 1/3 from 1.75rem
-            }
-          });
+              heading.style.marginBottom = marginBottom;
 
-          const h3s = postContent.querySelectorAll("h3");
-          h3s.forEach((h3) => {
-            if (h3 instanceof HTMLElement) {
-              h3.style.marginTop = "2.5rem";
-              h3.style.marginBottom = "1rem"; // Reduced by 1/3 from 1.5rem
-            }
-          });
-
-          const h4s = postContent.querySelectorAll("h4");
-          h4s.forEach((h4) => {
-            if (h4 instanceof HTMLElement) {
-              h4.style.marginTop = "2rem";
-              h4.style.marginBottom = "0.83rem"; // Reduced by 1/3 from 1.25rem
-            }
-          });
-
-          // Also set margin-top for paragraphs after headings - reduced by 50%
-          h2s.forEach((h2) => {
-            const nextP = h2.nextElementSibling;
-            if (
-              nextP &&
-              nextP instanceof HTMLElement &&
-              (nextP.tagName === "P" ||
-                nextP.tagName === "UL" ||
-                nextP.tagName === "OL")
-            ) {
-              nextP.style.marginTop = "1.17rem"; // Reduced by 1/3 from 1.75rem
-            }
-          });
-
-          h3s.forEach((h3) => {
-            const nextP = h3.nextElementSibling;
-            if (
-              nextP &&
-              nextP instanceof HTMLElement &&
-              (nextP.tagName === "P" ||
-                nextP.tagName === "UL" ||
-                nextP.tagName === "OL")
-            ) {
-              nextP.style.marginTop = "1rem"; // Reduced by 1/3 from 1.5rem
-            }
-          });
-
-          h4s.forEach((h4) => {
-            const nextP = h4.nextElementSibling;
-            if (
-              nextP &&
-              nextP instanceof HTMLElement &&
-              (nextP.tagName === "P" ||
-                nextP.tagName === "UL" ||
-                nextP.tagName === "OL" ||
-                nextP.tagName === "PRE")
-            ) {
-              nextP.style.marginTop = "0.83rem"; // Reduced by 1/3 from 1.25rem
-            }
+              // Apply content spacing after heading
+              const nextElement = heading.nextElementSibling;
+              if (
+                nextElement instanceof HTMLElement &&
+                contentTags.includes(nextElement.tagName)
+              ) {
+                nextElement.style.marginTop = contentMarginTop;
+              }
+            });
           });
         };
 

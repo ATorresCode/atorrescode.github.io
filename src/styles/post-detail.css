@@ -1,4 +1,19 @@
 /* Post Detail Page Styles */
+:root {
+  /* Heading spacing variables for post detail page */
+  --post-h2-margin-top: 3rem;
+  --post-h2-margin-bottom: 1.17rem;
+  --post-h2-content-margin-top: 1.17rem;
+  
+  --post-h3-margin-top: 2.5rem;
+  --post-h3-margin-bottom: 1rem;
+  --post-h3-content-margin-top: 1rem;
+  
+  --post-h4-margin-top: 2rem;
+  --post-h4-margin-bottom: 0.83rem;
+  --post-h4-content-margin-top: 0.83rem;
+}
+
 .post-detail-page {
   min-height: 100vh;
   padding-top: 160px;

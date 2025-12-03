@@ -286,7 +286,7 @@ import "../styles/home.css";
         let clickedItemIndex = null; // 记录点击的 item 索引
         let autoPlayTimer = null; // 自动轮播定时器
         let isAutoPlaying = true; // 是否自动轮播
-        const autoPlayInterval = 3000; // 自动轮播间隔（毫秒）
+        const autoPlayInterval = 4000; // 自动轮播间隔（毫秒）
 
         // 计算 offset（相对于容器中心的位置，像素值）
         // offset = itemCenterX - containerCenter
@@ -485,7 +485,7 @@ import "../styles/home.css";
         }
 
         // 平滑动画到指定位置
-        function animateTo(targetX, duration = 300) {
+        function animateTo(targetX, duration = 450) {
           const startX = currentX;
           const startTime = performance.now();
 
